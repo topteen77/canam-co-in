@@ -12,8 +12,16 @@ dist
 dist-ssr
 *.local
 .env
+.env.*
+!.env.example
+!.env.local.example
+server/.env
 server/.env.bak.*
 .deploy/
+
+# Accidental editor/backup copies
+*---*
+path
 
 # Editor directories and files
 .vscode/*
