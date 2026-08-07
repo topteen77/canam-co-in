@@ -1,0 +1,141 @@
+import React, { useState, useEffect, useMemo } from 'react';
+
+interface DateTimePickerProps {
+  value: string; // ISO format or YYYY-MM-DDTHH:mm
+  onChange: (value: string) => void;
+  label?: string;
+  min?: string;
+  required?: boolean;
+}
+
+export const CustomDateTimePicker: React.FC<DateTimePickerProps> = ({ value, onChange, label, min, required }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Parse initial value
+  const initialDate = value ? new Date(value) : new Date();
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  
+  // Update internal state when external value changes
+  useEffect(() => {
+    if (value) {
+      const d = new Date(value);
+      if (!isNaN(d.getTime())) {
+        setSelectedDate(d);
+      }
+    }
+  }, [value]);
+
+  const datePart = selectedDate.toISOString().split('T')[0];
+  const hour = selectedDate.getHours();
+  const minute = selectedDate.getMinutes();
+  const isPM = hour >= 12;
+  const displayHour = hour % 12 || 12;
+
+  const handleDateChange = (newDateStr: string) => {
+    const [y, m, d] = newDateStr.split('-').map(Number);
+    const newDate = new Date(selectedDate);
+    newDate.setFullYear(y, m - 1, d);
+    setSelectedDate(newDate);
+    onChange(newDate.toISOString().slice(0, 16));
+  };
+
+  const handleTimeChange = (h: number, m: number, pm: boolean) => {
+    const newDate = new Date(selectedDate);
+    let finalHour = h % 12;
+    if (pm) finalHour += 12;
+    newDate.setHours(finalHour, m);
+    setSelectedDate(newDate);
+    onChange(newDate.toISOString().slice(0, 16));
+  };
+
+  const hours = Array.from({ length: 12 }, (_, i) => i + 1);
+  const minutes = Array.from({ length: 60 }, (_, i) => i);
+
+  return (
+    <div className="relative">
+      {label && <label className="block text-sm font-bold text-slate-800 mb-1">{label}</label>}
+      
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full px-3 py-2 text-sm border-2 border-slate-300 rounded-lg shadow-sm cursor-pointer bg-white hover:border-indigo-400 transition-colors"
+      >
+        <span className="text-slate-800">
+          {selectedDate.toLocaleDateString()} {selectedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </span>
+        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setIsOpen(false)} 
+          />
+          <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden min-w-[320px] flex flex-col md:flex-row">
+            {/* Calendar Side */}
+            <div className="p-4 border-r border-slate-100">
+              <input 
+                type="date" 
+                value={datePart}
+                min={min?.split('T')[0]}
+                onChange={(e) => handleDateChange(e.target.value)}
+                className="w-full border-none focus:ring-0 text-sm font-medium"
+                autoFocus
+              />
+              <div className="mt-2 text-xs text-slate-400 text-center italic">
+                Pick a date from the calendar
+              </div>
+            </div>
+
+            {/* Time Side */}
+            <div className="p-4 bg-slate-50 flex gap-4">
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] uppercase font-bold text-slate-400 mb-1">Hour</span>
+                <select 
+                  value={displayHour}
+                  onChange={(e) => handleTimeChange(Number(e.target.value), minute, isPM)}
+                  className="bg-white border border-slate-200 rounded px-1 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  {hours.map(h => <option key={h} value={h}>{String(h).padStart(2, '0')}</option>)}
+                </select>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] uppercase font-bold text-slate-400 mb-1">Min</span>
+                <select 
+                  value={minute}
+                  onChange={(e) => handleTimeChange(displayHour, Number(e.target.value), isPM)}
+                  className="bg-white border border-slate-200 rounded px-1 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  {minutes.map(m => <option key={m} value={m}>{String(m).padStart(2, '0')}</option>)}
+                </select>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] uppercase font-bold text-slate-400 mb-1">AM/PM</span>
+                <div className="flex flex-col gap-1">
+                  <button 
+                    type="button"
+                    onClick={() => handleTimeChange(displayHour, minute, false)}
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded ${!isPM ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}
+                  >
+                    AM
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => handleTimeChange(displayHour, minute, true)}
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded ${isPM ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}
+                  >
+                    PM
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

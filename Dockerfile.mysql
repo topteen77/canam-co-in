@@ -1,0 +1,4 @@
+# Thin wrapper so image and container share one project name (DOCKER_NAME).
+FROM mysql:8.0
+
+CMD ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]

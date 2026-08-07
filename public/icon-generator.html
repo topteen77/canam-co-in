@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canam Icon Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        .icon { display: inline-block; margin: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Canam STUDYABROAD Icon Generator</h1>
+    <button onclick="generateIcons()">Generate All Icons</button>
+    <div id="icons"></div>
+
+    <script>
+        const sizes = [16, 32, 48, 72, 96, 144, 192, 256, 384, 512];
+        
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+            
+            // White background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, size, size);
+            
+            // For small icons, just show the graphic
+            if (size < 64) {
+                // Simple red circle for very small icons
+                ctx.fillStyle = '#cc0000';
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/3, 0, 2 * Math.PI);
+                ctx.fill();
+                return canvas;
+            }
+            
+            // For larger icons, show text + graphic
+            const scale = size / 512;
+            const centerX = size / 2;
+            const centerY = size / 2;
+            
+            // Draw text
+            if (size >= 96) {
+                ctx.fillStyle = '#333333';
+                ctx.font = `bold ${size * 0.12}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.fillText('canam', centerX - size * 0.15, centerY - size * 0.05);
+                
+                if (size >= 144) {
+                    ctx.font = `${size * 0.06}px Arial`;
+                    ctx.fillText('STUDYABROAD', centerX - size * 0.15, centerY + size * 0.08);
+                }
+            }
+            
+            // Draw the red starburst graphic
+            const graphicSize = size * 0.25;
+            const graphicX = centerX + size * 0.2;
+            const graphicY = centerY;
+            
+            ctx.save();
+            ctx.translate(graphicX, graphicY);
+            ctx.scale(graphicSize / 100, graphicSize / 100);
+            
+            // Central point
+            ctx.fillStyle = '#cc0000';
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Starburst petals
+            const colors = ['#ff4444', '#ee3333', '#dd2222', '#cc1111', '#bb0000'];
+            for (let i = 0; i < 5; i++) {
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                
+                const angle1 = (i * 72 - 36) * Math.PI / 180;
+                const angle2 = (i * 72 + 36) * Math.PI / 180;
+                
+                ctx.lineTo(Math.cos(angle1) * 40, Math.sin(angle1) * 40);
+                ctx.lineTo(Math.cos(angle2) * 40, Math.sin(angle2) * 40);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            ctx.restore();
+            return canvas;
+        }
+        
+        function generateIcons() {
+            const container = document.getElementById('icons');
+            container.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const canvas = createIcon(size);
+                const div = document.createElement('div');
+                div.className = 'icon';
+                
+                const label = document.createElement('div');
+                label.textContent = `${size}x${size}`;
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = 'Download';
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.download = `icon-${size}x${size}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+                
+                div.appendChild(label);
+                div.appendChild(canvas);
+                div.appendChild(downloadBtn);
+                container.appendChild(div);
+            });
+        }
+        
+        // Auto-generate on load
+        generateIcons();
+    </script>
+</body>
+</html>

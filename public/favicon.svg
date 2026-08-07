@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background -->
+  <rect width="32" height="32" fill="white"/>
+  
+  <!-- Simplified Logo - Just the graphic -->
+  <g transform="translate(16, 16) scale(0.6)">
+    <!-- Central point -->
+    <circle cx="0" cy="0" r="2" fill="#cc0000"/>
+    
+    <!-- Simplified starburst -->
+    <path d="M0,-12 Q-4,-9 -5,-5 Q-4,-1 0,0 Q4,-1 5,-5 Q4,-9 0,-12 Z" fill="#ff4444"/>
+    <path d="M8,-8 Q6,-6 3,-4 Q1,0 0,0 Q-1,0 -3,-4 Q-6,-6 -8,-8 Q-6,-10 -3,-8 Q-1,-12 0,-11 Q1,-12 3,-8 Q6,-10 8,-8 Z" fill="#ee3333"/>
+    <path d="M8,8 Q6,6 3,4 Q1,0 0,0 Q-1,0 -3,4 Q-6,6 -8,8 Q-6,10 -3,8 Q-1,12 0,11 Q1,12 3,8 Q6,10 8,8 Z" fill="#dd2222"/>
+    <path d="M-8,8 Q-6,6 -3,4 Q-1,0 0,0 Q1,0 3,4 Q6,6 8,8 Q6,10 3,8 Q1,12 0,11 Q-1,12 -3,8 Q-6,10 -8,8 Z" fill="#cc1111"/>
+    <path d="M-8,-8 Q-6,-6 -3,-4 Q-1,0 0,0 Q1,0 3,-4 Q6,-6 8,-8 Q6,-10 3,-8 Q1,-12 0,-11 Q-1,-12 -3,-8 Q-6,-10 -8,-8 Z" fill="#bb0000"/>
+  </g>
+</svg>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

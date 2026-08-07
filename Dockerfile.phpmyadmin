@@ -1,0 +1,5 @@
+# Thin wrapper so image and container share one name: ${DOCKER_NAME}-pma
+FROM phpmyadmin:5
+
+# Defaults overridden at runtime via .env / docker -e
+ENV PMA_ARBITRARY=0

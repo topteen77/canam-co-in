@@ -1,39 +1,41 @@
 {
-  "name": "myapp",
-  "version": "0.1.0",
+  "name": "canam-marketing-crm",
   "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
+  "version": "2.2.5",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+  "dev": "vite",
+  "server": "nodemon server/index.js",
+  "build": "node scripts/update-version.js && vite build && node scripts/copy-build-files.js",
+  "preview": "vite preview",
+  "deploy": "./deploy.sh",
+  "deploy:setup": "./deploy.sh setup",
+  "deploy:restart": "./deploy.sh restart",
+  "deploy:rebuild": "./deploy.sh rebuild",
+  "deploy:stop": "./deploy.sh stop",
+  "deploy:remove": "./deploy.sh remove",
+  "deploy:status": "./deploy.sh status"
+},
+  "dependencies": {
+    "@google/genai": "^1.38.0",
+    "axios": "^1.13.2",
+    "cors": "^2.8.6",
+    "mysql2": "^3.16.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tesseract.js": "^6.0.1",
+    "xlsx": "^0.18.5"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "autoprefixer": "^10.4.20",
+    "baseline-browser-mapping": "^2.9.18",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "~5.8.2",
+    "vite": "^6.4.1"
   }
 }
+

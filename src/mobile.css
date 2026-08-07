@@ -1,0 +1,408 @@
+/* Mobile-first responsive design improvements */
+
+/* ========== Mobile-first base (default = small screen) ========== */
+body {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+/* Main content area: full width on small screens. Do NOT target [class*="max-w-"] or modals/boxes become full width. */
+.main-content-wrap {
+  max-width: 100%;
+}
+/* Tap targets and touch */
+a, button {
+  touch-action: manipulation;
+}
+/* Prevent zoom on input focus (iOS) */
+input, select, textarea {
+  font-size: 16px;
+}
+@media (min-width: 769px) {
+  body { font-size: 16px; }
+}
+/* App shell: prevent horizontal scroll on small screens */
+.app-shell,
+.main-content-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Mobile Cards View Styles */
+.mobile-cards-container {
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  /* For vertical grid layout (mobile cards view) */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.mobile-card {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  /* For vertical grid layout */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile Navigation Styles */
+.mobile-nav-tabs {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-nav-tab {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Base mobile optimizations */
+@media (max-width: 768px) {
+  /* Improve touch targets - exclude checkboxes/radios and compact row actions */
+  button:not(.lead-row-action), input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Keep checkboxes and radios compact in tables/cards */
+  input[type="checkbox"],
+  input[type="radio"],
+  .lead-list-checkbox {
+    min-height: 0 !important;
+    min-width: 0 !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    flex-shrink: 0;
+  }
+  
+  /* Compact action buttons in lead table rows - avoid oversized tap targets */
+  .lead-row-action {
+    min-height: 28px !important;
+    min-width: 28px !important;
+    padding: 0.25rem !important;
+  }
+  
+  /* Allow buttons in flex containers to shrink on very small screens */
+  .flex-wrap button,
+  .flex button.flex-1 {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  
+  /* Better spacing for mobile */
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 1.5rem;
+  }
+  
+  /* Modal improvements for mobile */
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  /* Form improvements - exclude checkbox/radio to keep them small */
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+  
+  /* Button improvements */
+  button {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    touch-action: manipulation;
+  }
+  
+  /* Table responsive improvements */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Card improvements */
+  .card {
+    margin: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Navigation improvements */
+  .nav-item {
+    padding: 12px 16px;
+    margin: 4px 0;
+    border-radius: 8px;
+  }
+  
+  /* Better text sizing */
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
+  /* Improve dropdowns */
+  select {
+    background-size: 20px 20px;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+  
+  /* Mobile Cards View Enhancements - For vertical grid layout */
+  .mobile-cards-container {
+    /* Remove negative margins for vertical grid layout */
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  
+  .mobile-card {
+    /* Remove fixed widths for responsive design */
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Prevent horizontal overflow */
+  .mobile-cards-container * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure text and buttons don't cause overflow in cards */
+  .mobile-card button,
+  .mobile-card p,
+  .mobile-card span,
+  .mobile-card div {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Allow buttons to wrap and shrink in card action areas */
+  .mobile-card .flex-wrap button {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  
+  /* Mobile Navigation Enhancements */
+  .mobile-nav-tabs {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  
+  .mobile-nav-tab {
+    min-width: fit-content;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Mobile Header Optimizations */
+  .mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  /* Mobile Content Padding */
+  .mobile-content {
+    padding: 0.5rem;
+  }
+  
+  /* Mobile View Mode Selector */
+  .mobile-view-selector {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .mobile-view-selector button {
+    flex: 1;
+    min-width: 60px;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  .grid {
+    gap: 0.5rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .text-xs {
+    font-size: 0.75rem;
+  }
+  
+  /* Extra small mobile optimizations */
+  .mobile-card {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  /* Prevent any overflow on small screens */
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  /* Ensure all containers respect viewport width */
+  .mobile-cards-container,
+  .mobile-cards-container > * {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Ensure buttons in flex-wrap containers can shrink if needed */
+  .mobile-card .flex-wrap button {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  
+  /* Allow button text to wrap if absolutely necessary */
+  .mobile-card .flex-wrap button span {
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .mobile-nav-tab {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .mobile-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  /* Compact mobile buttons */
+  .mobile-compact-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Landscape orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .modal-content {
+    max-height: 95vh;
+  }
+  
+  .header {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+  /* Hide browser UI elements when in standalone mode */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    overflow-x: hidden;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+  
+  .header {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  /* Ensure mobile cards fit properly in PWA */
+  .mobile-cards-container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: max(0.5rem, env(safe-area-inset-left));
+    padding-right: max(0.5rem, env(safe-area-inset-right));
+    box-sizing: border-box;
+  }
+  
+  .mobile-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Improve touch interactions */
+  button:hover {
+    transform: none;
+  }
+  
+  .hover\:shadow-md:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Better focus states for touch */
+  button:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Better scrollbars on mobile */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+

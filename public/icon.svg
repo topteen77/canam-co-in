@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="white"/>
+  
+  <!-- Logo Text -->
+  <g transform="translate(40, 180)">
+    <!-- canam text -->
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="80" font-weight="normal" fill="#333333" text-anchor="start">canam</text>
+    
+    <!-- STUDYABROAD text -->
+    <text x="0" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="normal" fill="#333333" text-anchor="start" letter-spacing="1px">STUDYABROAD</text>
+  </g>
+  
+  <!-- Logo Graphic - Red Starburst/Leaf -->
+  <g transform="translate(350, 120) scale(0.8)">
+    <!-- Central point -->
+    <circle cx="0" cy="0" r="8" fill="#cc0000"/>
+    
+    <!-- Petal 1 - Top -->
+    <path d="M0,-45 Q-15,-35 -20,-20 Q-15,-5 0,0 Q15,-5 20,-20 Q15,-35 0,-45 Z" fill="#ff4444"/>
+    
+    <!-- Petal 2 - Top Right -->
+    <path d="M32,-32 Q22,-22 12,-17 Q7,-2 0,0 Q-7,-2 -12,-17 Q-22,-22 -32,-32 Q-22,-42 -12,-37 Q-7,-52 0,-50 Q7,-52 12,-37 Q22,-42 32,-32 Z" fill="#ee3333"/>
+    
+    <!-- Petal 3 - Bottom Right -->
+    <path d="M32,32 Q22,22 12,17 Q7,2 0,0 Q-7,2 -12,17 Q-22,22 -32,32 Q-22,42 -12,37 Q-7,52 0,50 Q7,52 12,37 Q22,42 32,32 Z" fill="#dd2222"/>
+    
+    <!-- Petal 4 - Bottom Left -->
+    <path d="M-32,32 Q-22,22 -12,17 Q-7,2 0,0 Q7,2 12,17 Q22,22 32,32 Q22,42 12,37 Q7,52 0,50 Q-7,52 -12,37 Q-22,42 -32,32 Z" fill="#cc1111"/>
+    
+    <!-- Petal 5 - Top Left -->
+    <path d="M-32,-32 Q-22,-22 -12,-17 Q-7,-2 0,0 Q7,-2 12,-17 Q22,-22 32,-32 Q22,-42 12,-37 Q7,-52 0,-50 Q-7,-52 -12,-37 Q-22,-42 -32,-32 Z" fill="#bb0000"/>
+    
+    <!-- Inner highlights for depth -->
+    <path d="M0,-45 Q-15,-35 -20,-20 Q-15,-5 0,0 Q15,-5 20,-20 Q15,-35 0,-45 Z" fill="#ff6666" opacity="0.3"/>
+    <path d="M32,-32 Q22,-22 12,-17 Q7,-2 0,0 Q-7,-2 -12,-17 Q-22,-22 -32,-32 Q-22,-42 -12,-37 Q-7,-52 0,-50 Q7,-52 12,-37 Q22,-42 32,-32 Z" fill="#ff5555" opacity="0.2"/>
+  </g>
+</svg>

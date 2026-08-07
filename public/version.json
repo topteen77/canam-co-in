@@ -1,0 +1,25 @@
+{
+  "version": "2.2.5",
+  "buildTime": "2026-05-26T10:18:19.178Z",
+  "buildNumber": "20260526101819",
+  "features": [
+    "Auto-update system",
+    "Mobile cache button",
+    "Enhanced PWA support",
+    "Improved mobile responsiveness",
+    "Automatic version management",
+    "Fixed pagination visibility",
+    "Enhanced authentication error handling",
+    "Improved Service Worker stability",
+    "PWA notification support for scheduled meetings"
+  ],
+  "changelog": [
+    "PWA notifications: Users receive notifications 5 minutes before scheduled meetings",
+    "Notifications work on Android and web browsers when app is installed as PWA",
+    "Notification permission is requested automatically when user logs in",
+    "Notifications include meeting details and actions (View, Snooze)",
+    "Notifications work even when app is closed (via service worker)",
+    "Real-time monitoring of scheduled meetings",
+    "Automatic notification cleanup when meetings are cancelled or completed"
+  ]
+}
