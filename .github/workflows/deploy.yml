@@ -3,17 +3,19 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      # Production auto-deploy DISABLED until manual server testing is done.
+      # Uncomment `- main` below when ready to enable production deploys.
+      # - main
       - dev
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Force environment'
+        description: 'Force environment (production blocked until enabled)'
         required: false
         type: choice
         options:
           - auto
-          - production
+          # - production   # DISABLED — uncomment when ready
           - staging
         default: auto
 
@@ -33,17 +35,23 @@ jobs:
         run: |
           REF="${{ github.ref_name }}"
           INPUT="${{ github.event.inputs.environment || 'auto' }}"
+
+          # --- PRODUCTION GUARD (remove/comment this block when enabling prod) ---
           if [ "$INPUT" = "production" ] || { [ "$INPUT" = "auto" ] && [ "$REF" = "main" ]; }; then
             echo "app_env=production" >> "$GITHUB_OUTPUT"
             echo "branch=main" >> "$GITHUB_OUTPUT"
             echo "domain=canam.co.in" >> "$GITHUB_OUTPUT"
             echo "deploy_path=${{ secrets.PROD_DEPLOY_PATH }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "app_env=staging" >> "$GITHUB_OUTPUT"
-            echo "branch=dev" >> "$GITHUB_OUTPUT"
-            echo "domain=dev.canam.co.in" >> "$GITHUB_OUTPUT"
-            echo "deploy_path=${{ secrets.STAGING_DEPLOY_PATH }}" >> "$GITHUB_OUTPUT"
+            echo "blocked=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          # --- END PRODUCTION GUARD ---
+
+          echo "app_env=staging" >> "$GITHUB_OUTPUT"
+          echo "branch=dev" >> "$GITHUB_OUTPUT"
+          echo "domain=dev.canam.co.in" >> "$GITHUB_OUTPUT"
+          echo "deploy_path=${{ secrets.STAGING_DEPLOY_PATH }}" >> "$GITHUB_OUTPUT"
+          echo "blocked=false" >> "$GITHUB_OUTPUT"
 
       - name: Show target
         run: |
@@ -51,8 +59,18 @@ jobs:
           echo "Branch:      ${{ steps.target.outputs.branch }}"
           echo "Domain:      ${{ steps.target.outputs.domain }}"
           echo "Path:        ${{ steps.target.outputs.deploy_path }}"
+          echo "Blocked:     ${{ steps.target.outputs.blocked }}"
+
+      # Production deploy intentionally skipped for now (manual testing first).
+      - name: Skip production deploy (disabled)
+        if: steps.target.outputs.blocked == 'true'
+        run: |
+          echo "::warning::Production deploy is DISABLED. Test manually on the server first."
+          echo "When ready, uncomment '- main' under on.push.branches and remove the production guard in this workflow."
+          echo "See DEPLOY.md for manual deploy steps."
 
       - name: Deploy over SSH
+        if: steps.target.outputs.blocked != 'true'
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}

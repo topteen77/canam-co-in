@@ -10,6 +10,10 @@
 GitHub Actions workflow: `.github/workflows/deploy.yml`  
 Pushes to `main` or `dev` deploy automatically over SSH.
 
+> **Production auto-deploy is currently DISABLED** (commented in the workflow) so you can test manually on the server first.  
+> Staging (`dev`) can still deploy via Actions.  
+> To re-enable production later: uncomment `- main` under `on.push.branches`, restore the `production` workflow_dispatch option, and remove the “PRODUCTION GUARD” / skip step in `.github/workflows/deploy.yml`.
+
 ---
 
 ## One-time server setup
