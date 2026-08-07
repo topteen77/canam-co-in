@@ -1,0 +1,6 @@
+# Production — allow indexing of public marketing pages if any.
+# CRM app itself is typically behind login.
+User-agent: *
+Allow: /
+
+Sitemap: https://canam.co.in/sitemap.xml

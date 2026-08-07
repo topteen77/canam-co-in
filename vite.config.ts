@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => {
       .map((h) => h.trim())
       .filter(Boolean);
 
+    const appEnv = (env.VITE_APP_ENV || env.APP_ENV || mode || 'development').toLowerCase();
+    const noIndex = env.VITE_NOINDEX === 'true' || appEnv === 'staging' || appEnv === 'dev';
+
     return {
       server: {
         host: env.FRONTEND_HOST || 'localhost',
@@ -18,7 +21,9 @@ export default defineConfig(({ mode }) => {
       },
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        'import.meta.env.VITE_APP_ENV': JSON.stringify(appEnv),
+        'import.meta.env.VITE_NOINDEX': JSON.stringify(noIndex ? 'true' : 'false'),
       },
       resolve: {
         alias: {
@@ -32,6 +37,19 @@ export default defineConfig(({ mode }) => {
             sw: './sw.js'
           }
         }
-      }
+      },
+      plugins: [
+        {
+          name: 'crm-html-env',
+          transformIndexHtml(html) {
+            if (!noIndex) return html;
+            if (html.includes('name="robots"')) return html;
+            return html.replace(
+              /<head>/i,
+              '<head>\n    <meta name="robots" content="noindex, nofollow, noarchive" />\n    <meta name="googlebot" content="noindex, nofollow, noarchive" />'
+            );
+          },
+        },
+      ],
     };
 });

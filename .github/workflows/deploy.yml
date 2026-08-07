@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Force environment'
+        required: false
+        type: choice
+        options:
+          - auto
+          - production
+          - staging
+        default: auto
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy (${{ github.ref_name }})
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+
+    steps:
+      - name: Resolve target
+        id: target
+        run: |
+          REF="${{ github.ref_name }}"
+          INPUT="${{ github.event.inputs.environment || 'auto' }}"
+          if [ "$INPUT" = "production" ] || { [ "$INPUT" = "auto" ] && [ "$REF" = "main" ]; }; then
+            echo "app_env=production" >> "$GITHUB_OUTPUT"
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+            echo "domain=canam.co.in" >> "$GITHUB_OUTPUT"
+            echo "deploy_path=${{ secrets.PROD_DEPLOY_PATH }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "app_env=staging" >> "$GITHUB_OUTPUT"
+            echo "branch=dev" >> "$GITHUB_OUTPUT"
+            echo "domain=dev.canam.co.in" >> "$GITHUB_OUTPUT"
+            echo "deploy_path=${{ secrets.STAGING_DEPLOY_PATH }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Show target
+        run: |
+          echo "Environment: ${{ steps.target.outputs.app_env }}"
+          echo "Branch:      ${{ steps.target.outputs.branch }}"
+          echo "Domain:      ${{ steps.target.outputs.domain }}"
+          echo "Path:        ${{ steps.target.outputs.deploy_path }}"
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          script_stop: true
+          command_timeout: 20m
+          script: |
+            set -euo pipefail
+            DEPLOY_PATH="${{ steps.target.outputs.deploy_path }}"
+            APP_ENV="${{ steps.target.outputs.app_env }}"
+            BRANCH="${{ steps.target.outputs.branch }}"
+
+            if [ -z "$DEPLOY_PATH" ]; then
+              if [ "$APP_ENV" = "production" ]; then
+                DEPLOY_PATH="/var/www/myapp"
+              else
+                DEPLOY_PATH="/var/www/myapp-staging"
+              fi
+            fi
+
+            echo "==> Deploying $APP_ENV ($BRANCH) → $DEPLOY_PATH (${{ steps.target.outputs.domain }})"
+
+            if [ ! -d "$DEPLOY_PATH/.git" ]; then
+              echo "ERROR: $DEPLOY_PATH is not a git checkout."
+              echo "On the server, run:"
+              echo "  sudo mkdir -p $(dirname "$DEPLOY_PATH")"
+              echo "  sudo git clone -b $BRANCH https://github.com/topteen77/canam-co-in.git $DEPLOY_PATH"
+              echo "  # then create $DEPLOY_PATH/.env from .env.example"
+              exit 1
+            fi
+
+            cd "$DEPLOY_PATH"
+            chmod +x scripts/remote-deploy.sh
+            APP_ENV="$APP_ENV" BRANCH="$BRANCH" \
+              CRM_API_NAME="crm-api-${APP_ENV}" \
+              ./scripts/remote-deploy.sh
+
+            echo "==> Done. Visit https://${{ steps.target.outputs.domain }}"

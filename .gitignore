@@ -19,8 +19,9 @@ server/.env
 server/.env.bak.*
 .deploy/
 
-# Accidental editor/backup copies
+# Accidental editor/backup copies (e.g. File.tsx---120526)
 *---*
+*--[0-9]*
 path
 
 # Editor directories and files
