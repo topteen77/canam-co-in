@@ -249,10 +249,36 @@ const App: React.FC = () => {
       return attendanceRecords.find(r => r.username === currentUser && (r.date === today || (r.checkInTime && String(r.checkInTime).startsWith(today))));
   }, [attendanceRecords, currentUser]);
 
-  const hasActiveMeeting = useMemo(() => 
-    meetingCheckIns.some(m => m.username === currentUser && !m.checkOutTime),
-    [meetingCheckIns, currentUser]
-  );
+  const hasActiveMeeting = useMemo(() => {
+    if (!currentUser) return false;
+    // Local calendar date (YYYY-MM-DD) — ignore stale "active" rows from past days
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const email = currentUser.toLowerCase();
+
+    return meetingCheckIns.some((m) => {
+      const rawUser = m.username || (m as any).Username || '';
+      let userEmail = '';
+      if (typeof rawUser === 'string' && rawUser.trim().startsWith('{')) {
+        try {
+          userEmail = String(JSON.parse(rawUser)?.email || '').toLowerCase();
+        } catch {
+          userEmail = rawUser.toLowerCase();
+        }
+      } else {
+        userEmail = String(rawUser).toLowerCase();
+      }
+      if (userEmail !== email) return false;
+
+      const status = String(m.meetingStatus || (m as any).meeting_status || '').toLowerCase();
+      if (status !== 'active') return false;
+      if (m.checkOutTime) return false;
+
+      const meetingDate = String(m.date || '').slice(0, 10);
+      const checkInDay = m.checkInTime ? String(m.checkInTime).slice(0, 10) : '';
+      return meetingDate === today || checkInDay === today;
+    });
+  }, [meetingCheckIns, currentUser]);
 
   // --- 4. HANDLERS ---
   const handleLogout = useCallback(async () => {
@@ -686,7 +712,12 @@ const App: React.FC = () => {
                   )}
                   <button
                     onClick={() => setIsMeetingCheckInModalOpen(true)}
-                    className={`px-1.5 sm:px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors min-h-[36px] sm:min-h-0 ${hasActiveMeeting ? 'bg-orange-600 hover:bg-orange-700 border border-orange-400' : 'bg-purple-600 hover:bg-purple-700'}`}
+                    title={hasActiveMeeting ? 'Active meeting — tap to check out' : 'Meeting check-in'}
+                    className={`px-1.5 sm:px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors min-h-[36px] sm:min-h-0 ${
+                      hasActiveMeeting
+                        ? 'bg-orange-600 hover:bg-orange-700 border border-orange-400 meeting-btn-blink'
+                        : 'bg-purple-600 hover:bg-purple-700'
+                    }`}
                   >
                     <span className="hidden sm:inline">{hasActiveMeeting ? '🟠 Meeting' : 'Meeting'}</span>
                     <span className="sm:hidden">Meet</span>

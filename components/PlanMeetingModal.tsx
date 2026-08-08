@@ -27,14 +27,31 @@ export const PlanMeetingModal: React.FC<PlanMeetingModalProps> = ({ leads, onClo
   const filteredLeads = useMemo(() => {
     if (!searchTerm.trim()) return safeLeads;
     const term = searchTerm.toLowerCase().trim();
-    return safeLeads.filter(
-      (l) =>
-        (l.agencyName || '').toLowerCase().includes(term) ||
-        (l.country || '').toLowerCase().includes(term) ||
-        (l.remarks || '').toLowerCase().includes(term)
-    );
+    return safeLeads.filter((l) => {
+      const nameMatch = (l.agencyName || '').toLowerCase().includes(term);
+      const countryMatch = (l.country || '').toLowerCase().includes(term);
+      const remarksMatch = (l.remarks || '').toLowerCase().includes(term);
+      const cityMatch = (Array.isArray(l.contacts) ? l.contacts : []).some((c) => {
+        const city = (c?.city || '').toLowerCase();
+        const state = (c?.state || '').toLowerCase();
+        const address = (c?.address || '').toLowerCase();
+        const country = (c?.country || '').toLowerCase();
+        return (
+          city.includes(term) ||
+          state.includes(term) ||
+          address.includes(term) ||
+          country.includes(term)
+        );
+      });
+      return nameMatch || countryMatch || remarksMatch || cityMatch;
+    });
   }, [safeLeads, searchTerm]);
 
+  const leadCityLabel = (lead: Lead): string => {
+    const contacts = Array.isArray(lead.contacts) ? lead.contacts : [];
+    const city = contacts.map((c) => c?.city).find((c) => c && String(c).trim());
+    return city ? String(city).trim() : '';
+  };
   const selectedLead = safeLeads.find((l) => l.id === selectedLeadId);
   const inputDisplayValue = selectedLeadId && selectedLead ? selectedLead.agencyName || '' : searchTerm;
 
@@ -89,7 +106,9 @@ export const PlanMeetingModal: React.FC<PlanMeetingModalProps> = ({ leads, onClo
                 {filteredLeads.length === 0 ? (
                   <li className="px-3 py-2 text-sm text-slate-500">No agency found</li>
                 ) : (
-                  filteredLeads.map((lead) => (
+                  filteredLeads.map((lead) => {
+                    const city = leadCityLabel(lead);
+                    return (
                     <li
                       key={lead.id}
                       role="option"
@@ -104,9 +123,13 @@ export const PlanMeetingModal: React.FC<PlanMeetingModalProps> = ({ leads, onClo
                         setDropdownOpen(false);
                       }}
                     >
-                      {lead.agencyName}
+                      <div className="font-medium truncate">{lead.agencyName}</div>
+                      {city ? (
+                        <div className="text-xs text-slate-500 truncate">📍 {city}</div>
+                      ) : null}
                     </li>
-                  ))
+                    );
+                  })
                 )}
               </ul>
             )}
